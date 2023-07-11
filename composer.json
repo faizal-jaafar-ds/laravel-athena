@@ -1,5 +1,5 @@
 {
-    "name": "alipeng/laravel-athena",
+    "name": "faizaljaafards/laravel-athena",
     "description": "Laravel athena query builder.",
     "type": "library",
     "require": {
