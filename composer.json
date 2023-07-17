@@ -1,5 +1,5 @@
 {
-    "name": "faizaljaafards/laravel-athena",
+    "name": "vettersoftware/laravel-athena",
     "description": "Laravel athena query builder.",
     "type": "library",
     "require": {
