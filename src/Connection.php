@@ -211,24 +211,21 @@ class Connection extends PostgresConnection
 
         // Modifying query & preparing it for LIMIT as per Athena
         if (is_int(stripos($query, 'BETWEENLIMIT'))) {
-            // Checking if ROW_NUMBER() OVER() window function applied, then take it as LIMIT query
-            if (!is_int(stripos($query, 'ROW_NUMBER()')) || !is_int(stripos($query, ' rn '))) {
-                throw new Exception("Error: Required `ROW_NUMBER() OVER(...) as rn` to implement LIMIT functionality");
-            } else {
-                $queryParts = preg_split("/BETWEENLIMIT/i", $query);
-                preg_match_all('!\d+!', array_pop($queryParts), $matches);
-                // Calculating offset and limit for Athena
-                $perPage = ($matches[0][0] - 1);
+            $queryParts = preg_split("/BETWEENLIMIT/i", $query);
+            preg_match_all('!\d+!', array_pop($queryParts), $matches);
+            // Calculating offset and limit for Athena
+            $perPage = ($matches[0][0]);
+            $from = ($matches[0][1]);
 
-                // Only apply this limit if we have per page greater than 0.
-                // This prevent BETWEEN as WHERE clause to be treated like LIMIT & OFFSET, which occurs if we have
-                // both BETWEEN and ROW_NUMBER() in query but that no LIMIT
-                if ($perPage > 0) {
-                    $page = ($matches[0][1] / $perPage) + 1;
-                    $from = ($perPage * ($page - 1)) + 1;
-                    $to = ($perPage * $page);
-                    $query = "SELECT * FROM ( " . Arr::first($queryParts) . " ) WHERE rn BETWEEN $from AND $to";
-                }
+            // Only apply this limit if we have per page greater than 0.
+            // This prevent BETWEEN as WHERE clause to be treated like LIMIT & OFFSET, which occurs if we have
+            // both BETWEEN and ROW_NUMBER() in query but that no LIMIT
+            if ($perPage > 0) {
+                $page = ($matches[0][1] / $perPage) + 1;
+                // $from = ($perPage * ($page - 1)) + 1;
+                // $to = ($perPage * $page);
+                $to = $perPage;
+                $query = "SELECT * FROM ( " . Arr::first($queryParts) . " ) offset $from rows LIMIT $to";
             }
         }
 
