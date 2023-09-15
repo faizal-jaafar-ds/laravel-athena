@@ -38,9 +38,11 @@ class Connection extends PostgresConnection
 
     public function __construct($config)
     {
-        $this->config = Config::get('athena');
+        $this->config = Config::get($config['driver']);
 
-        $this->database = $this->config['database'];
+        $this->config['database'] = $config['database'];
+
+        $this->database = $config['database'];
 
         $this->tablePrefix = isset($this->config['prefix']) ? $this->config['prefix'] : '';
 

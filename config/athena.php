@@ -22,8 +22,6 @@ $athenaConfiguration = [
 
     'version' => 'latest',
 
-    'database' => env('ATHENA_DB'),
-
     'prefix' => env('ATHENA_TABLE_PREFIX', ''),
 
     'bucket' => env('S3_BUCKET'),

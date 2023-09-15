@@ -11,8 +11,9 @@ Laravel 5.5+
 ```php
 'connections' => [
     ...
-    'athena' => [
+    'connection-name' => [
         'driver' => 'athena',
+        'database' => env('ATHENA_DB')
     ]
 ]
 ```
